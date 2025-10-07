@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <div>
+        <form id="login_form">
+            <label for="cpf">CPF: </label>
+            <input type="text" name="cpf" id="cpf" placeholder="123.456.789-11" maxlength="14" pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}">
+            <label for="senha">Senha: </label>
+            <input type="text" name="senha" id="senha" placeholder="******" minlength="6">
+            <span id="error"></span>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("cpf").addEventListener("input", (e) => {
+            if (e.target.value.length + 1 == 4 || e.target.value.length + 1 == 8){
+                document.getElementById("cpf").value += "."
+            }
+            if (e.target.value.length + 1 == 4 || e.target.value.length + 1 == 12){
+                document.getElementById("cpf").value += "-"
+            }O
+        })
+        document.getElementById("login_form").addEventListener("submit", async (e) => {
+            e.preventDefault()
+
+            const cpf = document.getElementById("cpf").value
+            const senha = document.getElementById("senha").value
+
+            const resultado = await login(cpf, senha)
+            document.getElementById("error").innerText = resultado
+            setTimeout(() => {
+                document.getElementById("error").innerText = ""
+            }, 3000)
+        });
+    </script>    
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <script src="script.js"></script>
+    <script>
+        const {user} = is_logged_in();
+        
+        if (!user){
+            document.location.href = "login.html"
+        }
+
+        if (user.rule == "admin"){
+            document.location.href = "admin.html"
+        } else if (user.rule == "tecnico") {
+            document.location.href = "tecnico.html"
+        } else if (user.rule == "funcionario_polo"){
+            document.location.href = "funcionario_polo.html"
+        } else {
+            alert("Cargo não registrado")
+            logout()
+        }
+    </script>
+</body>
+</html>

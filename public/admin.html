@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 2px solid rgb(140 140 140);
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+        thead,
+        tfoot {
+            background-color: rgb(228 240 245);
+        }
+
+        th,
+        td {
+            border: 1px solid rgb(160 160 160);
+            padding: 8px 10px;
+        }
+
+        td:last-of-type {
+            text-align: center;
+        }
+
+        tbody > tr:nth-of-type(even) {
+            background-color: rgb(237 238 242);
+        }
+
+        tfoot th {
+            text-align: right;
+        }
+
+        tfoot td {
+            font-weight: bold;
+        }
+
+        tbody > tr > td:first-child{
+            cursor: pointer;
+        }
+
+        #admin_form{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="admin_form">
+        <h3>Adicionar administrador</h3>
+        <form>
+            <input type="text" id="admin_nome">
+            <input type="text" >
+        </form>
+    </div>
+    <main>
+        <div>
+            <h3 style="vertical-align: middle;">Administradores<span style="cursor: pointer;font-size: 25px;" onclick="">  +</span></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                    </tr>
+                </thead>
+                <tbody id="admin_table">
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3>Polos</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Endereço</th>
+                    </tr>
+                </thead>
+                <tbody id="polos_table"></tbody>
+            </table>
+        </div>
+        <div>
+            <h3>Funcionários do polo</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                        <!--<th scope="col">Polo</th>-->
+                    </tr>
+                </thead>
+                <tbody id="funcionarios_polo_table"></tbody>
+            </table>
+        </div>
+        <div>
+            <h3>Técnicos de manutenção</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                    </tr>
+                </thead>
+                <tbody id="tecnicos_table"></tbody>
+            </table>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        const {user, token} = is_logged_in();
+        
+        if (!user || !token){
+            document.location.href = "login.html";
+        }
+
+        if (user.rule != "admin"){
+            logout();
+        }
+
+        window.onload = async () => {
+            var users = await get_users();
+            console.log(users)
+            for (var user_ of users){
+                if (user_.rule == "admin"){
+                    const table = document.getElementById("admin_table");
+                    const tr = document.createElement("tr");
+
+                    const td1 = document.createElement("td");
+                    const td2 = document.createElement("td");
+                    const td3 = document.createElement("td");
+
+                    td1.innerText = "X";
+                    const id = user_.id;
+
+                    td2.innerText = id;
+                    td3.innerText = user_.nome;
+
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+
+                    td1.addEventListener("click", async () => {
+                        if (await delete_user(id)) table.removeChild(tr)
+                    });
+
+                    table.appendChild(tr);
+                } else if (user_.rule == "tecnico"){
+                    const table = document.getElementById("tecnicos_table");
+                    const tr = document.createElement("tr");
+
+                    const td1 = document.createElement("td");
+                    const td2 = document.createElement("td");
+                    const td3 = document.createElement("td");
+
+                    td1.innerText = "X";
+                    const id = user_.id;
+                    
+                    td2.innerText = id;
+                    td3.innerText = user_.nome;
+                    
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+                    
+                    td1.addEventListener("click", async () => {
+                        if (await delete_user(id)) table.removeChild(tr)
+                    });
+
+                    table.appendChild(tr);
+                } else if (user_.rule == "funcionario_polo"){
+                    const table = document.getElementById("funcionarios_polo_table");
+                    const tr = document.createElement("tr");
+
+                    const td1 = document.createElement("td");
+                    const td2 = document.createElement("td");
+
+                    td1.innerText = user_.id
+                    td2.innerText = user_.nome
+
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+
+                    table.appendChild(tr);
+                }
+
+            }
+        }
+    </script>
+</body>
+</html>
