@@ -10,6 +10,7 @@ const userController = new UserController();
 const poloController = new PoloController();
 
 router.post("/login", userController.login);
+router.post("/adicionar_usuario", verify_token_middleware, verify_admin_middleware, userController.add);
 router.get("/listar_usuarios", verify_token_middleware, verify_admin_middleware, userController.list_users);
 router.get("/deletar_usuario/:id", verify_token_middleware, verify_admin_middleware, userController.delete);
 

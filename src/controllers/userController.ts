@@ -1,6 +1,6 @@
 import express from "express"
 import { create_token } from "../services/jwtService.js";
-import { delete_user, get_user, get_user_by_cpf, get_users } from "../services/userService.js";
+import { add_user, delete_user, get_user, get_user_by_cpf, get_users } from "../services/userService.js";
 
 class UserController{
     public login(request: express.Request, response: express.Response){
@@ -8,6 +8,8 @@ class UserController{
             const { cpf, senha } = request.body;
 
             if (!cpf || !senha) return response.status(400).send({ error: "Cpf e senha devem ser informados" })
+            if (senha.length < 6) return response.status(400).send({ error: "Senha deve conter no mínimo 6 caracteres" });
+            if (!(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf))) return response.status(400).send({ error: "Formato de cpf inválido" });
 
             const user = get_user_by_cpf(cpf);
 
@@ -21,6 +23,26 @@ class UserController{
         } catch (error) {
             console.log(error)
             return response.status(500).send({ error: "Internal server error" })
+        }
+    }
+
+    public add(request: express.Request, response: express.Response){
+        try {
+            const {cpf, nome, rule} = request.body;
+
+            if (!cpf || !nome || !rule) return response.status(400).send({ error: "Cpf, nome e cargo devem ser informados" });
+            if (!(["admin", "funcionario_polo", "tecnico"].includes(rule))) return response.status(400).send({ error: "Cargo inexistente" });   
+            if (!(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf))) return response.status(400).send({ error: "Formato de cpf inválido" });
+
+            const user = get_user_by_cpf(cpf);
+
+            if (user) return response.status(400).send({ error: "Cpf já cadastrado" });
+
+            const user_ = add_user(cpf, nome, rule);
+
+            return response.status(200).send({ user: user_ });
+        } catch (error) {
+            return response.status(500).send({ error: "Internal server error" });   
         }
     }
 

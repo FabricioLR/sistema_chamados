@@ -22,8 +22,9 @@ function delete_user_db(id: string){
     users = users.filter(user => user.id != id); 
 }
 function add_user_db(user: Omit<User, "id">){
-    users.push({...user, id: randomUUID()});
-
+    const user_ = {...user, id: randomUUID()};
+    users.push(user_);
+    return user_;
 }
 
 export type { User };

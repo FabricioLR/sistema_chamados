@@ -1,4 +1,10 @@
-import { delete_user_db, users, type User } from "../database/database.js";
+import { add_user_db, delete_user_db, users, type User } from "../database/database.js";
+
+function add_user(cpf: string, nome: string, rule: string){
+    const senha = cpf.replaceAll(".", "").replaceAll("-", "");
+    const user = add_user_db({cpf, nome, rule, senha});
+    return {id: user.id, nome: user.nome, rule: user.rule}
+}
 
 function get_user(id: string): User | undefined{
     return users.find(user => user.id == id);
@@ -20,4 +26,4 @@ function delete_user(id: string){
     delete_user_db(id);
 }
 
-export { get_user, get_user_by_cpf, get_users, delete_user };
+export { get_user, get_user_by_cpf, get_users, delete_user, add_user };

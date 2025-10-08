@@ -50,20 +50,58 @@
 
         #admin_form{
             display: none;
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            justify-content: center;
+            align-items: center;
+        }
+        #admin_form.active{
+            display: flex;
+        }
+        #admin_form form{
+            width: 300px;
+            height: 350px;
+            background-color: rgb(228, 228, 228);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #admin_form form h3{
+            text-align: center;
+        }
+
+        #admin_form form label{
+            margin-top: 20px;
+            text-align: left;
+            margin: 20px auto 0px auto;
+        }
+
+        #admin_form form input{
+            width: 70%;
+            margin: 0px auto 0px auto;
+        }
+
+        #admin_form form input:last-child{
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div id="admin_form">
-        <h3>Adicionar administrador</h3>
         <form>
-            <input type="text" id="admin_nome">
-            <input type="text" >
+            <span style="padding-right: 5px; font-size: 25px; text-align: end; cursor: pointer;" onclick="adicionar_user_form(1)">X</span>
+            <h3>Adicionar administrador</h3>
+            <label for="admin_nome">Nome: </label>
+            <input type="text" name="admin_nome" id="admin_nome" minlength="10">
+            <label for="admin_cpf">CPF: </label>
+            <input type="text" name="admin_cpf" id="admin_cpf" placeholder="123.456.789-11" maxlength="14" pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}">
+            <input type="submit" value="Adicionar">
         </form>
     </div>
     <main>
         <div>
-            <h3 style="vertical-align: middle;">Administradores<span style="cursor: pointer;font-size: 25px;" onclick="">  +</span></h3>
+            <h3 style="vertical-align: middle;">Administradores<span style="cursor: pointer;font-size: 25px;" onclick="adicionar_user_form(1)">  +</span></h3>
             <table>
                 <thead>
                     <tr>
@@ -128,6 +166,21 @@
         if (user.rule != "admin"){
             logout();
         }
+
+        async function adicionar_user_form(type){
+            if (type == 1){
+                document.getElementById("admin_form").classList.toggle("active")
+            }
+        }
+
+        document.getElementById("admin_cpf").addEventListener("input", (e) => {
+            if (e.target.value.length + 1 == 4 || e.target.value.length + 1 == 8){
+                document.getElementById("admin_cpf").value += "."
+            }
+            if (e.target.value.length + 1 == 4 || e.target.value.length + 1 == 12){
+                document.getElementById("admin_cpf").value += "-"
+            }O
+        })
 
         window.onload = async () => {
             var users = await get_users();
